@@ -46,6 +46,11 @@
 - [09 · 开机循环救援（重点）](docs/09-开机循环救援.md) — system_server 崩溃循环时怎么救
 - [10 · 踩坑合集](docs/10-踩坑合集.md)
 
+### 实战记录（原始报告）
+
+- [开机循环事故复盘](reports/开机循环事故复盘.md) — 完整崩溃堆栈、8 分钟无损修复过程
+- [优化最终状态](reports/优化最终状态.md) — 优化清单、实测数据、三档回滚手册
+
 ### 脚本
 
 - [`scripts/check-home-packages.sh`](scripts/check-home-packages.sh) — 冻结前必跑：扫描哪些包是 HOME 候选
