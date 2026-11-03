@@ -1,0 +1,89 @@
+# 天猫精灵 CC7（TG_S2B）刷机全流程
+
+> 一台阿里云 OS 定制音箱盒子，从「进不了 brom」到「拿到 root + 换第三方桌面 + 预装精简」的完整实战记录。
+> 全程真实操作，含两次翻车与排障过程，所有结论都有设备侧证据（日志 / dumpsys / 崩溃堆栈）。
+
+[![Device](https://img.shields.io/badge/Device-天猫精灵%20CC7%20(TG_S2B)-blue)]()
+[![SoC](https://img.shields.io/badge/SoC-MT8167-orange)]()
+[![Android](https://img.shields.io/badge/Android-8.1-green)]()
+[![Root](https://img.shields.io/badge/Root-Magisk%20v25.2-red)]()
+
+---
+
+## 这套流程解决了什么
+
+| 问题 | 官方途径 | 本仓库做法 |
+|---|---|---|
+| 装第三方 APK | 无「未知来源」入口 | 直接把 APK 塞进 `system/app` |
+| 调试设备 | 开发者选项只有 WAFT，`adbd` 协议层阉割 | 改 `build.prop` + `prop.default` 解封 adb shell |
+| 拿 root | 无 | Magisk 修补 boot 分区 |
+| 干掉卡顿预装 | 无 | `cmd package suspend` 冻结 + HOME 候选白名单 |
+| 刷坏了 | 无 | Magisk root shell 直接修 `/data`，不用 recovery / BROM |
+
+---
+
+## 目录
+
+### 准备
+
+- [00 · 设备信息与工具清单](docs/00-设备与工具.md)
+
+### 主流程
+
+| # | 步骤 | 关键点 |
+|---|---|---|
+| 1 | [进入 BROM 模式](docs/01-进入BROM模式.md) | 四键 + 两声提示音；Zadig 装 WinUSB 根治重连卡死 |
+| 2 | [解锁 BootLoader](docs/02-解锁BootLoader.md) | MTKClient 写 `seccfg` |
+| 3 | [全量分区备份](docs/03-分区备份.md) | 17 个分区，**唯一的救砖后悔药** |
+| 4 | [注入 APK 到 system](docs/04-注入APK到system.md) | CRBuilder 解包 → `system/app/` 平铺 → 重打包 |
+| 5 | [Magisk 修补 boot](docs/05-Magisk修补boot.md) | 架构必须选 **arm**，选错即砖 |
+| 6 | [解封 adb](docs/06-解封adb.md) | 三轮刷机才搞定，阿里的 `persist.sys.adb.enabled` 是关键 |
+| 7 | [安装 Magisk 拿到 root](docs/07-安装Magisk获取root.md) | 必须装成**普通应用**，塞 system 里 root 必坏 |
+
+### 优化与自救
+
+- [08 · 系统优化：冻结预装](docs/08-系统优化-冻结预装.md) — 实测 CPU 空闲 50% → 77%
+- [09 · 开机循环救援（重点）](docs/09-开机循环救援.md) — system_server 崩溃循环时怎么救
+- [10 · 踩坑合集](docs/10-踩坑合集.md)
+
+### 脚本
+
+- [`scripts/check-home-packages.sh`](scripts/check-home-packages.sh) — 冻结前必跑：扫描哪些包是 HOME 候选
+- [`scripts/freeze-safe.sh`](scripts/freeze-safe.sh) — 分批冻结 + 每批重启验证
+- [`scripts/fix-suspend-bootloop.sh`](scripts/fix-suspend-bootloop.sh) — 开机循环救援
+- [`scripts/99-dangbei-home.sh`](scripts/99-dangbei-home.sh) — 开机自动拉起第三方桌面
+
+---
+
+## 一句话总结每一条教训
+
+1. **备份没做完，不许写任何分区。**
+2. **Magisk 塞进 `system/app` = root 必坏**，必须当普通应用装。
+3. **冻结预装前必须查 `android.intent.category.HOME`**，冻到桌面候选就是开机无限重启。
+4. **改 `/data/system` 下的文件用 `cat` 原地覆盖**，`mv`/重新 push 会破坏属主与 SELinux 上下文。
+5. **`system_server` 崩了不等于砖** —— 这台设备的 adbd + Magisk root 在框架之前就绪，永远有救。
+
+---
+
+## 风险声明
+
+- 这是**非官方破解流程**，会失去保修，存在变砖可能。
+- 唯一救援依赖第 3 步的分区备份，**请务必另存一份到离线介质**。
+- 不同批次/固件版本的 CC7 可能存在差异，操作前先确认自己的 `Build` 指纹（见 [00 · 设备信息](docs/00-设备与工具.md)）。
+- 仓库不含任何第三方 APK / 固件二进制，避免版权与分发问题。
+
+---
+
+## 设备指纹（用于比对）
+
+```
+alps/full_ailabs_s1l_8b/ailabs_s1l_8b:6.1.8-RS-20240326.2006/O11019/1711454715:user/test-keys
+```
+
+若你的设备 `Build` 与此一致，本仓库流程可直接参考。
+
+---
+
+## License
+
+文档采用 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.zh)，脚本采用 [MIT](LICENSE)。
