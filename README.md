@@ -32,7 +32,7 @@
 
 | # | 步骤 | 关键点 |
 |---|---|---|
-| 1 | [进入 BROM 模式](docs/01-进入BROM模式.md) | 四键 + 两声提示音；Zadig 装 WinUSB 根治重连卡死 |
+| 1 | [进入 BROM 模式](docs/01-进入BROM模式.md) | USB 全程连着 → 断电 10s → 通电 → 立刻按四键；以 MTKClient 读到芯片为准 |
 | 2 | [解锁 BootLoader](docs/02-解锁BootLoader.md) | MTKClient 写 `seccfg` |
 | 3 | [全量分区备份](docs/03-分区备份.md) | 17 个分区，**唯一的救砖后悔药** |
 | 4 | [注入 APK 到 system](docs/04-注入APK到system.md) | CRBuilder 解包 → `system/app/` 平铺 → 重打包 |
