@@ -2,6 +2,11 @@
 # 99-dangbei-home.sh
 # 用途：开机后把第三方桌面拉到前台，绕开厂商系统强行拉起的原生桌面（可能卡死并吞掉触摸）。
 #
+# ⚠️ 本流程最终没有采用这个脚本（2026-11-03 实测结论）：
+#    原桌面卡死只是 dexopt 期间的暂时现象，为它长期养一个第三方桌面不划算 ——
+#    第三方桌面会自启约 130MB 的后台进程，还会把语音/儿童模式/IoT 入口盖住。
+#    取舍详见 docs/08-系统优化-冻结预装.md。下面保留安装方法，供确实需要的人取用。
+#
 # 安装：
 #   adb push 99-dangbei-home.sh /data/local/tmp/
 #   adb shell su -c 'cp /data/local/tmp/99-dangbei-home.sh /data/adb/service.d/'

@@ -56,7 +56,7 @@
 - [`scripts/check-home-packages.sh`](scripts/check-home-packages.sh) — 冻结前必跑：扫描哪些包是 HOME 候选
 - [`scripts/freeze-safe.sh`](scripts/freeze-safe.sh) — 分批冻结 + 每批重启验证
 - [`scripts/fix-suspend-bootloop.sh`](scripts/fix-suspend-bootloop.sh) — 开机循环救援
-- [`scripts/99-dangbei-home.sh`](scripts/99-dangbei-home.sh) — 开机自动拉起第三方桌面
+- [`scripts/99-dangbei-home.sh`](scripts/99-dangbei-home.sh) — 开机自动拉起第三方桌面（**可选项，本流程最终未采用**，原因见 [§08](docs/08-系统优化-冻结预装.md)）
 
 ---
 
